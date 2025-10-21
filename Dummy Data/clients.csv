@@ -1,0 +1,173 @@
+first_name,last_name,email,phone,date_of_birth,street_address,city,state,postcode,portfolio_value,risk_profile,client_since,investment_goal,assigned_adviser,review_frequency,next_review_date
+Michael,Smith,michael.smith@example.com,+61 412 234 567,1972-03-15,42 Ocean Street,Bondi,NSW,2026,125000,Conservative,2021-08-12,Retirement Planning,Sarah Chen,Quarterly,2025-02-15
+Anna,Papadopoulos,anna.papadopoulos@example.com,+61 423 345 678,1968-11-22,18 Collins Street,Melbourne,VIC,3000,450000,Balanced,2020-05-30,Wealth Building,James O'Connor,Semi-annually,2025-06-30
+David,Wong,david.wong@example.com,+61 434 456 789,1975-07-08,156 George Street,Brisbane,QLD,4000,85000,Conservative,2022-01-18,Retirement Planning,Emma Thompson,Quarterly,2024-11-15
+Maria,Rodriguez,maria.rodriguez@example.com,+61 445 567 890,1965-09-14,25 Chapel Street,St Kilda,VIC,3182,890000,Growth,2020-12-03,Estate Planning,Michael Nguyen,Annually,2025-12-03
+Jennifer,Taylor,jennifer.taylor@example.com,+61 456 678 901,1980-02-28,78 Military Road,Manly,NSW,2095,175000,Balanced,2023-04-22,Wealth Building,Sarah Chen,Quarterly,2025-04-22
+Ahmed,Hassan,ahmed.hassan@example.com,+61 467 789 012,1970-12-01,91 Brunswick Street,Brunswick,VIC,3056,320000,Conservative,2021-11-15,Retirement Planning,James O'Connor,Semi-annually,2025-05-15
+Lisa,Murphy,lisa.murphy@example.com,+61 478 890 123,1978-05-19,203 Given Terrace,Paddington,QLD,4064,65000,Balanced,2022-09-08,Retirement Planning,Emma Thompson,Quarterly,2025-09-08
+Raj,Patel,raj.patel@example.com,+61 489 901 234,1963-08-25,45 Bay Street,Brighton,VIC,3186,1200000,Growth,2020-07-11,Estate Planning,Michael Nguyen,Semi-annually,2025-01-11
+Christine,O'Brien,christine.obrien@example.com,+61 490 012 345,1974-04-03,127 Oxford Street,Bulimba,QLD,4171,95000,Conservative,2023-02-14,Retirement Planning,Sarah Chen,Quarterly,2024-12-14
+Thanh,Nguyen,thanh.nguyen@example.com,+61 401 123 456,1969-10-30,56 Harris Street,Pyrmont,NSW,2009,680000,Balanced,2021-06-25,Wealth Building,James O'Connor,Annually,2025-06-25
+Robert,Johnson,robert.johnson@example.com,+61 412 345 678,1976-01-12,89 Toorak Road,Toorak,VIC,3142,230000,Conservative,2022-12-01,Retirement Planning,Emma Thompson,Semi-annually,2025-06-01
+Sofia,Dimitriou,sofia.dimitriou@example.com,+61 423 456 789,1971-06-18,34 Latrobe Terrace,New Farm,QLD,4005,155000,Balanced,2020-03-09,Wealth Building,Michael Nguyen,Quarterly,2025-03-09
+Paul,Williams,paul.williams@example.com,+61 434 567 890,1967-12-07,72 Pacific Highway,Chatswood,NSW,2067,750000,Growth,2021-10-20,Estate Planning,Sarah Chen,Annually,2025-10-20
+Elena,Rossi,elena.rossi@example.com,+61 445 678 901,1979-03-25,48 Swan Street,Richmond,VIC,3121,380000,Balanced,2023-01-15,Wealth Building,James O'Connor,Semi-annually,2025-07-15
+Mark,Thompson,mark.thompson@example.com,+61 456 789 012,1964-09-02,165 Racecourse Road,Ascot,QLD,4007,2100000,Growth,2020-11-28,Estate Planning,Emma Thompson,Annually,2025-11-28
+Angela,Lee,angela.lee@example.com,+61 467 890 123,1973-07-16,91 Beach Road,Bondi Beach,NSW,2026,140000,Conservative,2022-05-18,Retirement Planning,Michael Nguyen,Quarterly,2025-05-18
+Nicholas,Kowalski,nicholas.kowalski@example.com,+61 478 901 234,1968-11-09,27 Fitzroy Street,St Kilda,VIC,3182,420000,Balanced,2021-02-03,Wealth Building,Sarah Chen,Semi-annually,2025-02-03
+Caroline,Davis,caroline.davis@example.com,+61 489 012 345,1977-04-21,113 Oxford Street,Paddington,NSW,2021,98000,Conservative,2023-08-11,Retirement Planning,James O'Connor,Quarterly,2024-11-11
+Tony,Mancuso,tony.mancuso@example.com,+61 490 123 456,1962-01-14,85 Albert Street,Brisbane,QLD,4000,1850000,Growth,2020-09-05,Estate Planning,Emma Thompson,Annually,2025-09-05
+Helen,Chan,helen.chan@example.com,+61 401 234 567,1975-08-03,192 Church Street,Parramatta,NSW,2150,270000,Balanced,2022-07-19,Wealth Building,Michael Nguyen,Semi-annually,2025-01-19
+Stephen,White,stephen.white@example.com,+61 412 456 789,1970-05-27,45 High Street,Prahran,VIC,3181,180000,Conservative,2021-04-12,Retirement Planning,Sarah Chen,Quarterly,2025-04-12
+Irene,Popovic,irene.popovic@example.com,+61 423 567 890,1966-12-11,78 Given Terrace,Paddington,QLD,4064,620000,Growth,2020-01-22,Estate Planning,James O'Connor,Annually,2025-01-22
+Andrew,Brown,andrew.brown@example.com,+61 434 678 901,1978-09-28,56 Military Road,Neutral Bay,NSW,2089,115000,Conservative,2023-06-07,Retirement Planning,Emma Thompson,Quarterly,2025-06-07
+Maria,Tran,maria.tran@example.com,+61 445 789 012,1972-02-15,123 Collins Street,Melbourne,VIC,3000,490000,Balanced,2021-12-14,Wealth Building,Michael Nguyen,Semi-annually,2025-06-14
+James,Wilson,james.wilson@example.com,+61 456 890 123,1969-06-09,89 Ann Street,Brisbane,QLD,4000,325000,Conservative,2022-03-28,Retirement Planning,Sarah Chen,Quarterly,2024-12-28
+Sandra,Paterson,sandra.paterson@example.com,+61 467 901 234,1974-11-17,34 Bay Street,Double Bay,NSW,2028,760000,Growth,2020-08-16,Estate Planning,James O'Connor,Annually,2025-08-16
+George,Stavros,george.stavros@example.com,+61 478 012 345,1965-04-04,67 Chapel Street,St Kilda,VIC,3182,210000,Balanced,2023-05-03,Wealth Building,Emma Thompson,Semi-annually,2025-11-03
+Linda,Garcia,linda.garcia@example.com,+61 489 123 456,1976-10-22,145 Oxford Street,Bulimba,QLD,4171,88000,Conservative,2022-11-09,Retirement Planning,Michael Nguyen,Quarterly,2025-11-09
+Peter,O'Sullivan,peter.osullivan@example.com,+61 490 234 567,1963-07-08,92 Campbell Parade,Bondi Beach,NSW,2026,1450000,Growth,2021-01-30,Estate Planning,Sarah Chen,Annually,2025-01-30
+Sophia,Kim,sophia.kim@example.com,+61 401 345 678,1971-12-26,156 Toorak Road,South Yarra,VIC,3141,350000,Balanced,2020-06-18,Wealth Building,James O'Connor,Semi-annually,2025-12-18
+Richard,Moore,richard.moore@example.com,+61 412 567 890,1977-03-13,78 Latrobe Terrace,New Farm,QLD,4005,120000,Conservative,2023-09-21,Retirement Planning,Emma Thompson,Quarterly,2025-03-21
+Catherine,Antonakos,catherine.antonakos@example.com,+61 423 678 901,1968-08-01,203 Pacific Highway,Crows Nest,NSW,2065,585000,Growth,2021-07-12,Estate Planning,Michael Nguyen,Annually,2025-07-12
+Daniel,Clark,daniel.clark@example.com,+61 434 789 012,1975-01-19,45 Swan Street,Richmond,VIC,3121,195000,Balanced,2022-10-05,Wealth Building,Sarah Chen,Semi-annually,2025-04-05
+Michelle,Phillips,michelle.phillips@example.com,+61 445 890 123,1964-11-07,89 Given Terrace,Paddington,QLD,4064,72000,Conservative,2023-03-17,Retirement Planning,James O'Connor,Quarterly,2024-12-17
+Thomas,Ricci,thomas.ricci@example.com,+61 456 901 234,1973-05-24,127 Chapel Street,Prahran,VIC,3181,810000,Growth,2020-04-11,Estate Planning,Emma Thompson,Annually,2025-04-11
+Anna,Evans,anna.evans@example.com,+61 467 012 345,1970-09-15,56 Military Road,Manly,NSW,2095,280000,Balanced,2022-01-26,Wealth Building,Michael Nguyen,Semi-annually,2025-07-26
+Jonathan,Baker,jonathan.baker@example.com,+61 478 123 456,1966-04-12,91 High Street,Kew,VIC,3101,165000,Conservative,2021-11-08,Retirement Planning,Sarah Chen,Quarterly,2025-11-08
+Rebecca,Tsiakis,rebecca.tsiakis@example.com,+61 489 234 567,1979-07-29,234 Oxford Street,Bulimba,QLD,4171,425000,Balanced,2023-02-19,Wealth Building,James O'Connor,Semi-annually,2025-08-19
+Christopher,Taylor,christopher.taylor@example.com,+61 490 345 678,1972-12-03,78 Beach Road,Bondi,NSW,2026,95000,Conservative,2020-12-30,Retirement Planning,Emma Thompson,Quarterly,2025-12-30
+Patricia,Nakamura,patricia.nakamura@example.com,+61 401 456 789,1967-02-17,145 Collins Street,Melbourne,VIC,3000,1180000,Growth,2021-05-14,Estate Planning,Michael Nguyen,Annually,2025-05-14
+Steven,Mitchell,steven.mitchell@example.com,+61 412 678 901,1975-08-26,92 Ann Street,Brisbane,QLD,4000,240000,Balanced,2022-08-03,Wealth Building,Sarah Chen,Semi-annually,2025-02-03
+Laura,Costa,laura.costa@example.com,+61 423 789 012,1969-01-09,56 Bay Street,Brighton,VIC,3186,320000,Conservative,2023-07-15,Retirement Planning,James O'Connor,Quarterly,2025-01-15
+Matthew,Anderson,matthew.anderson@example.com,+61 434 890 123,1976-06-21,189 Pacific Highway,Chatswood,NSW,2067,680000,Growth,2020-10-07,Estate Planning,Emma Thompson,Annually,2025-10-07
+Jennifer,Vo,jennifer.vo@example.com,+61 445 901 234,1963-10-18,78 Swan Street,Richmond,VIC,3121,155000,Balanced,2022-04-20,Wealth Building,Michael Nguyen,Semi-annually,2025-10-20
+Gary,Roberts,gary.roberts@example.com,+61 456 012 345,1974-03-05,123 Given Terrace,New Farm,QLD,4005,89000,Conservative,2021-09-13,Retirement Planning,Sarah Chen,Quarterly,2024-12-13
+Susan,Marinakis,susan.marinakis@example.com,+61 467 123 456,1968-11-14,67 Military Road,Neutral Bay,NSW,2089,750000,Growth,2020-02-28,Estate Planning,James O'Connor,Annually,2025-02-28
+Kevin,Collins,kevin.collins@example.com,+61 478 234 567,1977-09-02,234 Chapel Street,St Kilda,VIC,3182,210000,Balanced,2023-12-01,Wealth Building,Emma Thompson,Semi-annually,2025-06-01
+Nancy,Lam,nancy.lam@example.com,+61 489 345 678,1965-05-19,145 Oxford Street,Paddington,QLD,4064,125000,Conservative,2022-06-17,Retirement Planning,Michael Nguyen,Quarterly,2025-06-17
+Brian,Murphy,brian.murphy@example.com,+61 490 456 789,1971-01-31,89 Campbell Parade,Bondi Beach,NSW,2026,485000,Balanced,2021-03-24,Wealth Building,Sarah Chen,Semi-annually,2025-09-24
+Lisa,Papadakis,lisa.papadakis@example.com,+61 401 567 890,1973-08-08,156 Toorak Road,Toorak,VIC,3142,365000,Conservative,2020-07-19,Retirement Planning,James O'Connor,Quarterly,2025-01-19
+Donald,Wright,donald.wright@example.com,+61 412 789 012,1966-04-25,78 Latrobe Terrace,New Farm,QLD,4005,1650000,Growth,2022-11-02,Estate Planning,Emma Thompson,Annually,2025-11-02
+Mary,Tan,mary.tan@example.com,+61 423 890 123,1978-12-13,203 Harris Street,Pyrmont,NSW,2009,190000,Balanced,2023-04-08,Wealth Building,Michael Nguyen,Semi-annually,2025-10-08
+Charles,Scott,charles.scott@example.com,+61 434 901 234,1969-07-06,45 High Street,Prahran,VIC,3181,275000,Conservative,2021-08-25,Retirement Planning,Sarah Chen,Quarterly,2025-02-25
+Helen,Rosso,helen.rosso@example.com,+61 445 012 345,1975-02-23,92 Given Terrace,Paddington,QLD,4064,620000,Growth,2020-05-12,Estate Planning,James O'Connor,Annually,2025-05-12
+Joseph,King,joseph.king@example.com,+61 456 123 456,1964-09-10,127 Pacific Highway,Crows Nest,NSW,2065,145000,Balanced,2022-12-19,Wealth Building,Emma Thompson,Semi-annually,2025-06-19
+Carol,Pham,carol.pham@example.com,+61 467 234 567,1976-06-27,56 Swan Street,Richmond,VIC,3121,98000,Conservative,2023-01-04,Retirement Planning,Michael Nguyen,Quarterly,2024-10-04
+William,Lewis,william.lewis@example.com,+61 478 345 678,1967-11-16,189 Chapel Street,Prahran,VIC,3181,820000,Growth,2021-06-09,Estate Planning,Sarah Chen,Annually,2025-06-09
+Dorothy,Kouris,dorothy.kouris@example.com,+61 489 456 789,1972-03-03,78 Military Road,Manly,NSW,2095,255000,Balanced,2020-09-22,Wealth Building,James O'Connor,Semi-annually,2025-03-22
+Robert,Hill,robert.hill@example.com,+61 490 567 890,1970-08-20,234 Oxford Street,Bulimba,QLD,4171,380000,Conservative,2022-02-15,Retirement Planning,Emma Thompson,Quarterly,2025-08-15
+Barbara,Nguyen,barbara.nguyen@example.com,+61 401 678 901,1965-01-07,145 Beach Road,Bondi,NSW,2026,115000,Balanced,2023-10-28,Wealth Building,Michael Nguyen,Semi-annually,2025-04-28
+Edward,Green,edward.green@example.com,+61 412 890 123,1977-05-14,92 Collins Street,Melbourne,VIC,3000,1250000,Growth,2021-01-11,Estate Planning,Sarah Chen,Annually,2025-01-11
+Ruth,Fernandez,ruth.fernandez@example.com,+61 423 901 234,1969-10-01,156 Ann Street,Brisbane,QLD,4000,190000,Conservative,2020-11-06,Retirement Planning,James O'Connor,Quarterly,2025-11-06
+Anthony,Martinez,anthony.martinez@example.com,+61 434 012 345,1974-04-18,78 Bay Street,Brighton,VIC,3186,425000,Balanced,2022-07-23,Wealth Building,Emma Thompson,Semi-annually,2025-01-23
+Sharon,Andreou,sharon.andreou@example.com,+61 445 123 456,1968-12-05,203 Pacific Highway,Chatswood,NSW,2067,680000,Growth,2023-05-16,Estate Planning,Michael Nguyen,Annually,2025-05-16
+Kenneth,Adams,kenneth.adams@example.com,+61 456 234 567,1975-09-22,45 Swan Street,Richmond,VIC,3121,155000,Conservative,2021-12-08,Retirement Planning,Sarah Chen,Quarterly,2024-09-08
+Michelle,Chen,michelle.chen@example.com,+61 467 345 678,1963-06-09,127 Given Terrace,New Farm,QLD,4005,72000,Balanced,2020-04-01,Wealth Building,James O'Connor,Semi-annually,2025-10-01
+Paul,Young,paul.young@example.com,+61 478 456 789,1976-11-26,89 Military Road,Neutral Bay,NSW,2089,540000,Growth,2022-09-14,Estate Planning,Emma Thompson,Annually,2025-09-14
+Deborah,Moretti,deborah.moretti@example.com,+61 489 567 890,1971-02-12,234 Chapel Street,St Kilda,VIC,3182,220000,Balanced,2023-08-27,Wealth Building,Michael Nguyen,Semi-annually,2025-02-27
+Jason,Walker,jason.walker@example.com,+61 490 678 901,1967-07-30,145 Oxford Street,Paddington,QLD,4064,385000,Conservative,2021-05-20,Retirement Planning,Sarah Chen,Quarterly,2025-05-20
+Sandra,Le,sandra.le@example.com,+61 401 789 012,1973-01-17,78 Campbell Parade,Bondi Beach,NSW,2026,165000,Balanced,2020-08-03,Wealth Building,James O'Connor,Semi-annually,2025-02-03
+Ryan,Hall,ryan.hall@example.com,+61 412 901 234,1969-06-04,156 Toorak Road,South Yarra,VIC,3141,925000,Growth,2022-03-19,Estate Planning,Emma Thompson,Annually,2025-03-19
+Carolyn,Christou,carolyn.christou@example.com,+61 423 012 345,1975-10-21,92 Latrobe Terrace,New Farm,QLD,4005,275000,Conservative,2023-12-12,Retirement Planning,Michael Nguyen,Quarterly,2025-12-12
+Frank,Allen,frank.allen@example.com,+61 434 123 456,1964-03-08,203 Harris Street,Pyrmont,NSW,2009,145000,Balanced,2021-07-05,Wealth Building,Sarah Chen,Semi-annually,2025-01-05
+Janet,Rodriguez,janet.rodriguez@example.com,+61 445 234 567,1978-08-25,45 High Street,Prahran,VIC,3181,680000,Growth,2020-12-18,Estate Planning,James O'Connor,Annually,2025-12-18
+Larry,Wright,larry.wright@example.com,+61 456 345 678,1966-05-12,127 Given Terrace,Paddington,QLD,4064,195000,Conservative,2022-05-31,Retirement Planning,Emma Thompson,Quarterly,2024-11-30
+Maria,Kazantzis,maria.kazantzis@example.com,+61 467 456 789,1972-11-29,89 Pacific Highway,Crows Nest,NSW,2065,480000,Balanced,2023-02-14,Wealth Building,Michael Nguyen,Semi-annually,2025-08-14
+Jerry,Scott,jerry.scott@example.com,+61 478 567 890,1970-04-16,234 Swan Street,Richmond,VIC,3121,325000,Conservative,2021-10-27,Retirement Planning,Sarah Chen,Quarterly,2025-04-27
+Frances,Kumar,frances.kumar@example.com,+61 489 678 901,1965-09-03,145 Chapel Street,Prahran,VIC,3181,760000,Growth,2020-01-15,Estate Planning,James O'Connor,Annually,2025-01-15
+Scott,Robinson,scott.robinson@example.com,+61 490 789 012,1977-01-20,78 Military Road,Manly,NSW,2095,210000,Balanced,2022-08-08,Wealth Building,Emma Thompson,Semi-annually,2025-02-08
+Virginia,Tran,virginia.tran@example.com,+61 401 890 123,1968-06-07,203 Oxford Street,Bulimba,QLD,4171,88000,Conservative,2023-11-21,Retirement Planning,Michael Nguyen,Quarterly,2025-11-21
+Raymond,Lopez,raymond.lopez@example.com,+61 412 012 345,1974-12-24,145 Beach Road,Bondi,NSW,2026,1450000,Growth,2021-04-16,Estate Planning,Sarah Chen,Annually,2025-04-16
+Kathleen,Valeris,kathleen.valeris@example.com,+61 423 123 456,1963-08-11,92 Collins Street,Melbourne,VIC,3000,125000,Balanced,2020-07-29,Wealth Building,James O'Connor,Semi-annually,2025-01-29
+Gregory,Turner,gregory.turner@example.com,+61 434 234 567,1976-03-28,156 Ann Street,Brisbane,QLD,4000,365000,Conservative,2022-12-14,Retirement Planning,Emma Thompson,Quarterly,2025-06-14
+Diane,Wong,diane.wong@example.com,+61 445 345 678,1971-09-15,78 Bay Street,Brighton,VIC,3186,485000,Growth,2023-07-02,Estate Planning,Michael Nguyen,Annually,2025-07-02
+Harold,Phillips,harold.phillips@example.com,+61 456 456 789,1967-02-02,203 Pacific Highway,Chatswood,NSW,2067,195000,Balanced,2021-11-19,Wealth Building,Sarah Chen,Semi-annually,2025-05-19
+Julie,Caruso,julie.caruso@example.com,+61 467 567 890,1975-07-19,45 Swan Street,Richmond,VIC,3121,275000,Conservative,2020-06-12,Retirement Planning,James O'Connor,Quarterly,2025-12-12
+Carl,Campbell,carl.campbell@example.com,+61 478 678 901,1969-12-06,127 Given Terrace,New Farm,QLD,4005,620000,Growth,2022-01-25,Estate Planning,Emma Thompson,Annually,2025-01-25
+Cheryl,Nguyen,cheryl.nguyen@example.com,+61 489 789 012,1973-05-23,89 Military Road,Neutral Bay,NSW,2089,155000,Balanced,2023-09-18,Wealth Building,Michael Nguyen,Semi-annually,2025-03-18
+Wayne,Mitchell,wayne.mitchell@example.com,+61 490 890 123,1965-11-10,234 Chapel Street,St Kilda,VIC,3182,98000,Conservative,2021-02-11,Retirement Planning,Sarah Chen,Quarterly,2024-11-11
+Joan,Lambros,joan.lambros@example.com,+61 401 901 234,1978-04-27,145 Oxford Street,Paddington,QLD,4064,750000,Growth,2020-10-24,Estate Planning,James O'Connor,Annually,2025-10-24
+Ralph,Evans,ralph.evans@example.com,+61 412 123 567,1964-08-14,78 Campbell Parade,Bondi Beach,NSW,2026,225000,Balanced,2022-06-07,Wealth Building,Emma Thompson,Semi-annually,2025-12-07
+Joyce,Park,joyce.park@example.com,+61 423 234 678,1972-01-01,156 Toorak Road,Toorak,VIC,3142,380000,Conservative,2023-03-23,Retirement Planning,Michael Nguyen,Quarterly,2025-09-23
+Eugene,Garcia,eugene.garcia@example.com,+61 434 345 789,1970-06-18,92 Latrobe Terrace,New Farm,QLD,4005,485000,Growth,2021-08-16,Estate Planning,Sarah Chen,Annually,2025-08-16
+Teresa,Manolis,teresa.manolis@example.com,+61 445 456 890,1966-11-05,203 Harris Street,Pyrmont,NSW,2009,165000,Balanced,2020-03-30,Wealth Building,James O'Connor,Semi-annually,2025-09-30
+Arthur,Baker,arthur.baker@example.com,+61 456 567 901,1975-09-22,45 High Street,Prahran,VIC,3181,295000,Conservative,2022-11-13,Retirement Planning,Emma Thompson,Quarterly,2025-05-13
+Judith,Silva,judith.silva@example.com,+61 467 678 012,1969-04-09,127 Given Terrace,Paddington,QLD,4064,680000,Growth,2023-06-26,Estate Planning,Michael Nguyen,Annually,2025-06-26
+Lawrence,Kelly,lawrence.kelly@example.com,+61 478 789 123,1973-10-26,89 Pacific Highway,Crows Nest,NSW,2065,215000,Balanced,2021-01-19,Wealth Building,Sarah Chen,Semi-annually,2025-07-19
+Beverly,Russo,beverly.russo@example.com,+61 489 890 234,1967-07-13,234 Swan Street,Richmond,VIC,3121,125000,Conservative,2020-08-02,Retirement Planning,James O'Connor,Quarterly,2025-02-02
+Jesse,Wood,jesse.wood@example.com,+61 490 901 345,1976-12-30,145 Chapel Street,Prahran,VIC,3181,820000,Growth,2022-04-15,Estate Planning,Emma Thompson,Annually,2025-04-15
+Marilyn,Tran,marilyn.tran@example.com,+61 401 012 456,1962-05-17,78 Military Road,Manly,NSW,2095,175000,Balanced,2023-10-08,Wealth Building,Michael Nguyen,Semi-annually,2025-04-08
+Bruce,Stewart,bruce.stewart@example.com,+61 412 234 678,1974-11-04,203 Oxford Street,Bulimba,QLD,4171,385000,Conservative,2021-07-21,Retirement Planning,Sarah Chen,Quarterly,2025-01-21
+Jacqueline,Petrou,jacqueline.petrou@example.com,+61 423 345 789,1968-02-21,145 Beach Road,Bondi,NSW,2026,485000,Growth,2020-12-09,Estate Planning,James O'Connor,Annually,2025-12-09
+Louis,Torres,louis.torres@example.com,+61 434 456 890,1977-08-08,92 Collins Street,Melbourne,VIC,3000,255000,Balanced,2022-09-22,Wealth Building,Emma Thompson,Semi-annually,2025-03-22
+Gloria,Lee,gloria.lee@example.com,+61 445 567 901,1965-01-25,156 Ann Street,Brisbane,QLD,4000,145000,Conservative,2023-05-05,Retirement Planning,Michael Nguyen,Quarterly,2024-12-05
+Alan,Reed,alan.reed@example.com,+61 456 678 012,1971-06-12,78 Bay Street,Brighton,VIC,3186,1180000,Growth,2021-12-28,Estate Planning,Sarah Chen,Annually,2025-12-28
+Brenda,Kostas,brenda.kostas@example.com,+61 467 789 123,1973-03-29,203 Pacific Highway,Chatswood,NSW,2067,265000,Balanced,2020-05-14,Wealth Building,James O'Connor,Semi-annually,2025-11-14
+Philip,Cooper,philip.cooper@example.com,+61 478 890 234,1969-09-16,45 Swan Street,Richmond,VIC,3121,195000,Conservative,2022-02-27,Retirement Planning,Emma Thompson,Quarterly,2025-08-27
+Alice,Phan,alice.phan@example.com,+61 489 901 345,1975-12-03,127 Given Terrace,New Farm,QLD,4005,425000,Growth,2023-01-10,Estate Planning,Michael Nguyen,Annually,2025-01-10
+Bobby,Richardson,bobby.richardson@example.com,+61 490 012 456,1964-04-20,89 Military Road,Neutral Bay,NSW,2089,155000,Balanced,2021-09-05,Wealth Building,Sarah Chen,Semi-annually,2025-03-05
+Christine,Manos,christine.manos@example.com,+61 401 123 567,1978-10-07,234 Chapel Street,St Kilda,VIC,3182,685000,Growth,2020-02-18,Estate Planning,James O'Connor,Annually,2025-02-18
+Johnny,Price,johnny.price@example.com,+61 412 345 789,1966-07-24,145 Oxford Street,Paddington,QLD,4064,125000,Conservative,2022-10-31,Retirement Planning,Emma Thompson,Quarterly,2024-10-31
+Wanda,Nguyen,wanda.nguyen@example.com,+61 423 456 890,1972-11-11,78 Campbell Parade,Bondi Beach,NSW,2026,345000,Balanced,2023-08-14,Wealth Building,Michael Nguyen,Semi-annually,2025-02-14
+Roy,Perry,roy.perry@example.com,+61 434 567 901,1970-02-28,156 Toorak Road,South Yarra,VIC,3141,485000,Growth,2021-05-03,Estate Planning,Sarah Chen,Annually,2025-05-03
+Victoria,Athanassiou,victoria.athanassiou@example.com,+61 445 678 012,1967-08-15,92 Latrobe Terrace,New Farm,QLD,4005,215000,Conservative,2020-11-26,Retirement Planning,James O'Connor,Quarterly,2025-11-26
+Roger,Hughes,roger.hughes@example.com,+61 456 789 123,1975-01-02,203 Harris Street,Pyrmont,NSW,2009,285000,Balanced,2022-07-09,Wealth Building,Emma Thompson,Semi-annually,2025-01-09
+Norma,Martinez,norma.martinez@example.com,+61 467 890 234,1963-06-19,45 High Street,Prahran,VIC,3181,620000,Growth,2023-04-22,Estate Planning,Michael Nguyen,Annually,2025-04-22
+Harold,Ward,harold.ward@example.com,+61 478 901 345,1974-12-06,127 Given Terrace,Paddington,QLD,4064,165000,Conservative,2021-11-15,Retirement Planning,Sarah Chen,Quarterly,2024-08-15
+Denise,Romano,denise.romano@example.com,+61 489 012 456,1968-03-23,89 Pacific Highway,Crows Nest,NSW,2065,755000,Growth,2020-09-08,Estate Planning,James O'Connor,Annually,2025-09-08
+Willie,Cox,willie.cox@example.com,+61 490 123 567,1976-09-10,234 Swan Street,Richmond,VIC,3121,195000,Balanced,2022-12-21,Wealth Building,Emma Thompson,Semi-annually,2025-06-21
+Lois,Kim,lois.kim@example.com,+61 401 234 678,1965-05-27,145 Chapel Street,Prahran,VIC,3181,125000,Conservative,2023-07-04,Retirement Planning,Michael Nguyen,Quarterly,2025-01-04
+Jack,Fisher,jack.fisher@example.com,+61 412 456 890,1971-11-14,78 Military Road,Manly,NSW,2095,485000,Growth,2021-03-17,Estate Planning,Sarah Chen,Annually,2025-03-17
+Andrea,Vamvakaris,andrea.vamvakaris@example.com,+61 423 567 901,1973-04-01,203 Oxford Street,Bulimba,QLD,4171,225000,Balanced,2020-06-30,Wealth Building,James O'Connor,Semi-annually,2025-12-30
+Albert,Powell,albert.powell@example.com,+61 434 678 012,1969-10-18,145 Beach Road,Bondi,NSW,2026,365000,Conservative,2022-01-12,Retirement Planning,Emma Thompson,Quarterly,2025-07-12
+Janice,Le,janice.le@example.com,+61 445 789 123,1977-07-05,92 Collins Street,Melbourne,VIC,3000,685000,Growth,2023-11-25,Estate Planning,Michael Nguyen,Annually,2025-11-25
+Wayne,Griffin,wayne.griffin@example.com,+61 456 890 234,1964-12-22,156 Ann Street,Brisbane,QLD,4000,155000,Balanced,2021-08-08,Wealth Building,Sarah Chen,Semi-annually,2025-02-08
+Sarah,Dimitriadis,sarah.dimitriadis@example.com,+61 467 901 345,1975-03-09,78 Bay Street,Brighton,VIC,3186,275000,Conservative,2020-01-21,Retirement Planning,James O'Connor,Quarterly,2025-07-21
+Gerald,Butler,gerald.butler@example.com,+61 478 012 456,1968-08-26,203 Pacific Highway,Chatswood,NSW,2067,825000,Growth,2022-05-14,Estate Planning,Emma Thompson,Annually,2025-05-14
+Kathryn,Tran,kathryn.tran@example.com,+61 489 123 567,1972-02-13,45 Swan Street,Richmond,VIC,3121,195000,Balanced,2023-09-27,Wealth Building,Michael Nguyen,Semi-annually,2025-03-27
+Walter,Russell,walter.russell@example.com,+61 490 234 678,1966-07-30,127 Given Terrace,New Farm,QLD,4005,425000,Conservative,2021-06-10,Retirement Planning,Sarah Chen,Quarterly,2024-12-10
+Rose,Papadimitriou,rose.papadimitriou@example.com,+61 401 345 789,1974-01-17,89 Military Road,Neutral Bay,NSW,2089,565000,Growth,2020-04-03,Estate Planning,James O'Connor,Annually,2025-04-03
+Joe,Diaz,joe.diaz@example.com,+61 412 567 901,1970-06-04,234 Chapel Street,St Kilda,VIC,3182,185000,Balanced,2022-11-16,Wealth Building,Emma Thompson,Semi-annually,2025-05-16
+Jane,Chen,jane.chen@example.com,+61 423 678 012,1965-11-21,145 Oxford Street,Paddington,QLD,4064,95000,Conservative,2023-02-28,Retirement Planning,Michael Nguyen,Quarterly,2024-11-28
+Billy,Sanders,billy.sanders@example.com,+61 434 789 123,1977-05-08,78 Campbell Parade,Bondi Beach,NSW,2026,1350000,Growth,2021-10-21,Estate Planning,Sarah Chen,Annually,2025-10-21
+Evelyn,Komninos,evelyn.komninos@example.com,+61 445 890 234,1963-09-25,156 Toorak Road,Toorak,VIC,3142,245000,Balanced,2020-07-04,Wealth Building,James O'Connor,Semi-annually,2025-01-04
+Bobby,Gray,bobby.gray@example.com,+61 456 901 345,1976-12-12,92 Latrobe Terrace,New Farm,QLD,4005,315000,Conservative,2022-03-17,Retirement Planning,Emma Thompson,Quarterly,2025-09-17
+Elizabeth,Patel,elizabeth.patel@example.com,+61 467 012 456,1971-04-29,203 Harris Street,Pyrmont,NSW,2009,485000,Growth,2023-06-30,Estate Planning,Michael Nguyen,Annually,2025-06-30
+Wayne,James,wayne.james@example.com,+61 478 123 567,1967-10-16,45 High Street,Prahran,VIC,3181,165000,Balanced,2021-01-23,Wealth Building,Sarah Chen,Semi-annually,2025-07-23
+Lillian,Spanos,lillian.spanos@example.com,+61 489 234 678,1975-07-03,127 Given Terrace,Paddington,QLD,4064,725000,Growth,2020-12-06,Estate Planning,James O'Connor,Annually,2025-12-06
+Ernest,Washington,ernest.washington@example.com,+61 490 345 789,1969-01-20,89 Pacific Highway,Crows Nest,NSW,2065,205000,Conservative,2022-08-19,Retirement Planning,Emma Thompson,Quarterly,2025-02-19
+Dawn,Giannopoulos,dawn.giannopoulos@example.com,+61 401 456 890,1973-06-07,234 Swan Street,Richmond,VIC,3121,385000,Balanced,2023-11-02,Wealth Building,Michael Nguyen,Semi-annually,2025-05-02
+Ralph,Barnes,ralph.barnes@example.com,+61 412 678 901,1964-12-24,145 Chapel Street,Prahran,VIC,3181,125000,Conservative,2021-04-05,Retirement Planning,Sarah Chen,Quarterly,2024-10-05
+Mildred,Vo,mildred.vo@example.com,+61 423 789 012,1978-03-11,78 Military Road,Manly,NSW,2095,865000,Growth,2020-09-18,Estate Planning,James O'Connor,Annually,2025-09-18
+Eugene,Henderson,eugene.henderson@example.com,+61 434 890 123,1966-08-28,203 Oxford Street,Bulimba,QLD,4171,255000,Balanced,2022-06-01,Wealth Building,Emma Thompson,Semi-annually,2025-12-01
+Doris,Karagiannis,doris.karagiannis@example.com,+61 445 901 234,1972-02-15,145 Beach Road,Bondi,NSW,2026,165000,Conservative,2023-09-14,Retirement Planning,Michael Nguyen,Quarterly,2025-03-14
+Fred,Coleman,fred.coleman@example.com,+61 456 012 345,1970-07-02,92 Collins Street,Melbourne,VIC,3000,485000,Growth,2021-12-27,Estate Planning,Sarah Chen,Annually,2025-12-27
+Amy,Phan,amy.phan@example.com,+61 467 123 456,1967-01-19,156 Ann Street,Brisbane,QLD,4000,195000,Balanced,2020-05-10,Wealth Building,James O'Connor,Semi-annually,2025-11-10
+Earl,Simmons,earl.simmons@example.com,+61 478 234 567,1975-06-06,78 Bay Street,Brighton,VIC,3186,325000,Conservative,2022-10-23,Retirement Planning,Emma Thompson,Quarterly,2025-04-23
+Emily,Stamatakis,emily.stamatakis@example.com,+61 489 345 678,1963-11-23,203 Pacific Highway,Chatswood,NSW,2067,665000,Growth,2023-03-08,Estate Planning,Michael Nguyen,Annually,2025-03-08
+Arthur,Foster,arthur.foster@example.com,+61 490 456 789,1974-04-10,45 Swan Street,Richmond,VIC,3121,215000,Balanced,2021-07-21,Wealth Building,Sarah Chen,Semi-annually,2025-01-21
+Ruth,Nguyen,ruth.nguyen@example.com,+61 401 567 890,1968-09-27,127 Given Terrace,New Farm,QLD,4005,125000,Conservative,2020-02-04,Retirement Planning,James O'Connor,Quarterly,2025-08-04
+Peter,Perry,peter.perry@example.com,+61 412 789 012,1976-12-14,89 Military Road,Neutral Bay,NSW,2089,785000,Growth,2022-04-17,Estate Planning,Emma Thompson,Annually,2025-04-17
+Frances,Karras,frances.karras@example.com,+61 423 890 123,1965-05-01,234 Chapel Street,St Kilda,VIC,3182,185000,Balanced,2023-10-30,Wealth Building,Michael Nguyen,Semi-annually,2025-04-30
+Howard,Long,howard.long@example.com,+61 434 901 234,1971-10-18,145 Oxford Street,Paddington,QLD,4064,365000,Conservative,2021-01-13,Retirement Planning,Sarah Chen,Quarterly,2024-07-13
+Marie,Le,marie.le@example.com,+61 445 012 345,1973-03-05,78 Campbell Parade,Bondi Beach,NSW,2026,485000,Growth,2020-08-26,Estate Planning,James O'Connor,Annually,2025-08-26
+Carl,Patterson,carl.patterson@example.com,+61 456 123 456,1969-08-22,156 Toorak Road,South Yarra,VIC,3141,225000,Balanced,2022-12-09,Wealth Building,Emma Thompson,Semi-annually,2025-06-09
+Irene,Papadopoulos,irene.papadopoulos@example.com,+61 467 234 567,1967-01-09,92 Latrobe Terrace,New Farm,QLD,4005,145000,Conservative,2023-05-22,Retirement Planning,Michael Nguyen,Quarterly,2024-12-22
+Steve,Hughes,steve.hughes@example.com,+61 478 345 678,1975-06-26,203 Harris Street,Pyrmont,NSW,2009,1250000,Growth,2021-11-08,Estate Planning,Sarah Chen,Annually,2025-11-08
+Phyllis,Katsaros,phyllis.katsaros@example.com,+61 489 456 789,1964-11-13,45 High Street,Prahran,VIC,3181,195000,Balanced,2020-04-21,Wealth Building,James O'Connor,Semi-annually,2025-10-21
+Sean,Morris,sean.morris@example.com,+61 490 567 890,1978-02-28,127 Given Terrace,Paddington,QLD,4064,365000,Conservative,2022-07-04,Retirement Planning,Emma Thompson,Quarterly,2025-01-04
+Lori,Tran,lori.tran@example.com,+61 401 678 901,1970-09-15,89 Pacific Highway,Crows Nest,NSW,2065,585000,Growth,2023-12-17,Estate Planning,Michael Nguyen,Annually,2025-12-17
+Dennis,Reed,dennis.reed@example.com,+61 412 890 123,1966-04-02,234 Swan Street,Richmond,VIC,3121,165000,Balanced,2021-05-20,Wealth Building,Sarah Chen,Semi-annually,2025-11-20
+Michelle,Constantinou,michelle.constantinou@example.com,+61 423 901 234,1972-10-19,145 Chapel Street,Prahran,VIC,3181,285000,Conservative,2020-01-03,Retirement Planning,James O'Connor,Quarterly,2025-07-03
+George,Cook,george.cook@example.com,+61 434 012 345,1968-07-06,78 Military Road,Manly,NSW,2095,725000,Growth,2022-09-16,Estate Planning,Emma Thompson,Annually,2025-09-16
+Stephanie,Vlahos,stephanie.vlahos@example.com,+61 445 123 456,1974-12-23,203 Oxford Street,Bulimba,QLD,4171,205000,Balanced,2023-04-29,Wealth Building,Michael Nguyen,Semi-annually,2025-10-29
+Richard,Bell,richard.bell@example.com,+61 456 234 567,1965-03-10,145 Beach Road,Bondi,NSW,2026,125000,Conservative,2021-08-12,Retirement Planning,Sarah Chen,Quarterly,2024-11-12
+Cynthia,Pham,cynthia.pham@example.com,+61 467 345 678,1977-08-27,92 Collins Street,Melbourne,VIC,3000,865000,Growth,2020-11-05,Estate Planning,James O'Connor,Annually,2025-11-05
+Louis,Bailey,louis.bailey@example.com,+61 478 456 789,1963-01-14,156 Ann Street,Brisbane,QLD,4000,195000,Balanced,2022-02-18,Wealth Building,Emma Thompson,Semi-annually,2025-08-18
+Diana,Arvanitis,diana.arvanitis@example.com,+61 489 567 890,1975-06-01,78 Bay Street,Brighton,VIC,3186,345000,Conservative,2023-07-31,Retirement Planning,Michael Nguyen,Quarterly,2025-01-31
+Russell,Rivera,russell.rivera@example.com,+61 490 678 901,1971-11-18,203 Pacific Highway,Chatswood,NSW,2067,485000,Growth,2021-03-06,Estate Planning,Sarah Chen,Annually,2025-03-06
+Beverly,Mavros,beverly.mavros@example.com,+61 401 789 012,1969-04-05,45 Swan Street,Richmond,VIC,3121,225000,Balanced,2020-06-19,Wealth Building,James O'Connor,Semi-annually,2025-12-19
+Henry,Cooper,henry.cooper@example.com,+61 412 901 234,1976-09-22,127 Given Terrace,New Farm,QLD,4005,165000,Conservative,2022-11-02,Retirement Planning,Emma Thompson,Quarterly,2025-05-02
+Tammy,Nguyen,tammy.nguyen@example.com,+61 423 012 345,1964-02-09,89 Military Road,Neutral Bay,NSW,2089,765000,Growth,2023-08-15,Estate Planning,Michael Nguyen,Annually,2025-08-15
