@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  pgbouncer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: crm-pgbouncer
+    restart: unless-stopped
+
+    # Environment variables
+    environment:
+      - DB_HOST=${SUPABASE_DB_HOST}
+      - DB_NAME=${SUPABASE_DB_NAME:-postgres}
+      - DB_USER=${SUPABASE_DB_USER:-postgres}
+      - DB_REPLICA_HOST=${SUPABASE_DB_REPLICA_HOST:-${SUPABASE_DB_HOST}}
+      - DB_ADMIN_USER=${PGBOUNCER_ADMIN_USER:-postgres}
+      - DB_STATS_USER=${PGBOUNCER_STATS_USER:-pgbouncer}
+
+    # Ports
+    ports:
+      - "6432:6432"  # PgBouncer port
+
+    # Volumes
+    volumes:
+      - ./pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini:ro
+      - ./userlist.txt:/etc/pgbouncer/userlist.txt:ro
+      - pgbouncer-logs:/var/log/pgbouncer
+
+    # Networks
+    networks:
+      - crm-network
+
+    # Resource limits (adjust based on your needs)
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "psql", "-h", "127.0.0.1", "-p", "6432", "-U", "pgbouncer", "pgbouncer", "-c", "SHOW STATS"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Optional: Prometheus exporter for PgBouncer metrics
+  pgbouncer-exporter:
+    image: prometheuscommunity/pgbouncer-exporter:latest
+    container_name: crm-pgbouncer-exporter
+    restart: unless-stopped
+
+    environment:
+      - PGBOUNCER_HOST=pgbouncer
+      - PGBOUNCER_PORT=6432
+      - PGBOUNCER_USER=${PGBOUNCER_STATS_USER:-pgbouncer}
+      - PGBOUNCER_PASS=${PGBOUNCER_STATS_PASSWORD}
+
+    ports:
+      - "9127:9127"  # Prometheus metrics port
+
+    networks:
+      - crm-network
+
+    depends_on:
+      pgbouncer:
+        condition: service_healthy
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          cpus: '0.25'
+          memory: 64M
+
+volumes:
+  pgbouncer-logs:
+    driver: local
+
+networks:
+  crm-network:
+    driver: bridge

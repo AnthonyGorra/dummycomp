@@ -1,0 +1,21 @@
+;; PgBouncer User List
+;; Format: "username" "password"
+;; The password should be MD5 hash: "md5" + md5(password + username)
+;; Or for plaintext (not recommended): "username" "password"
+;;
+;; Generate MD5 password with:
+;; echo -n "passwordusername" | md5sum
+;; Then prepend "md5" to the hash
+;;
+;; Example:
+;; "myuser" "md5d8578edf8458ce06fbc5bb76a58c5ca4"
+
+;; Admin user (replace with your actual credentials)
+"postgres" "md5[your-md5-hash-here]"
+
+;; Application users
+;; Note: For Supabase, you typically use service role key or JWT authentication
+;; This file is mainly for direct PostgreSQL connections
+
+;; IMPORTANT: Keep this file secure and out of version control
+;; Use environment variables or secrets management in production
