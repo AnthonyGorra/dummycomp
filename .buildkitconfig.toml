@@ -1,0 +1,32 @@
+# BuildKit Configuration
+# Optimizes Docker builds with advanced caching and parallelization
+
+# Enable inline cache export
+[worker.oci]
+  enabled = true
+  max-parallelism = 4
+
+[worker.containerd]
+  enabled = true
+  namespace = "buildkit"
+
+# Registry cache configuration
+[registry."ghcr.io"]
+  mirrors = ["ghcr.io"]
+
+# Cache configuration
+[cache]
+  # Keep cache for 7 days
+  keep-storage = "10GB"
+
+# Build history
+[history]
+  max-age = 336h  # 14 days
+  max-entries = 50
+
+# GC policy
+[gc.policy]
+  [[gc.policy.rule]]
+    all = true
+    keepBytes = "10GB"
+    keepDuration = "168h"  # 7 days

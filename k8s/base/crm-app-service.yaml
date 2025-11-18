@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: crm-app
+  labels:
+    app: crm-app
+    component: backend
+spec:
+  type: ClusterIP
+  selector:
+    app: crm-app
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+    protocol: TCP
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: crm-app-headless
+  labels:
+    app: crm-app
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: crm-app
+  ports:
+  - name: http
+    port: 3000
+    targetPort: http
+    protocol: TCP

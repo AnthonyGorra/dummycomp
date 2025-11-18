@@ -1,0 +1,11 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: crm-app
+  labels:
+    app: crm-app
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: crm-app

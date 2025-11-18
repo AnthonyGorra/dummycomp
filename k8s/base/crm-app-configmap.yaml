@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crm-app-config
+  labels:
+    app: crm-app
+data:
+  supabase_url: "https://dummy.supabase.co"
+  n8n_webhook_url: "https://demo-n8n.example.com/webhook/demo"
+  node_env: "production"

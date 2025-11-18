@@ -1,0 +1,64 @@
+version: '3.8'
+
+# Development Docker Compose with:
+# - Hot reload support
+# - Volume mounts for live code editing
+# - Debug ports exposed
+# - Development environment variables
+
+services:
+  crm-app:
+    build:
+      context: ./crm-app
+      dockerfile: Dockerfile
+      target: deps-dev
+    image: dummycomp/crm-app:dev
+    container_name: crm-app-dev
+    ports:
+      - "3000:3000"
+      - "9229:9229"  # Node.js debug port
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL:-https://dummy.supabase.co}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - N8N_WEBHOOK_URL=${N8N_WEBHOOK_URL}
+      - N8N_API_KEY=${N8N_API_KEY}
+      - WEBHOOK_SECRET=${WEBHOOK_SECRET}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    volumes:
+      - ./crm-app:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+    restart: unless-stopped
+    networks:
+      - dummycomp-dev-network
+    labels:
+      - "com.dummycomp.env=development"
+
+  website:
+    build:
+      context: ./website
+      dockerfile: Dockerfile
+      target: deps-dev
+    image: dummycomp/website:dev
+    container_name: website-dev
+    ports:
+      - "3001:3001"
+      - "9230:9229"  # Node.js debug port
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./website:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+    restart: unless-stopped
+    networks:
+      - dummycomp-dev-network
+    labels:
+      - "com.dummycomp.env=development"
+
+networks:
+  dummycomp-dev-network:
+    driver: bridge

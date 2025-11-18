@@ -1,0 +1,229 @@
+name: Rollback Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      strategy:
+        description: 'Deployment strategy'
+        required: true
+        type: choice
+        options:
+          - blue-green
+          - canary
+          - standard
+      environment:
+        description: 'Environment to rollback'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      rollback_to_version:
+        description: 'Version to rollback to (optional for blue-green)'
+        required: false
+        type: string
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  rollback:
+    name: Rollback ${{ inputs.strategy }} deployment
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" | base64 -d > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      - name: Verify cluster connection
+        run: kubectl cluster-info
+
+      - name: Rollback blue-green deployment
+        if: inputs.strategy == 'blue-green'
+        run: |
+          echo "Rolling back blue-green deployment..."
+
+          # Get current active version
+          ACTIVE_VERSION=$(kubectl get service crm-app -n ${{ inputs.environment }} \
+            -o jsonpath='{.spec.selector.version}')
+
+          echo "Current active: ${ACTIVE_VERSION}"
+
+          # Determine rollback target
+          if [ "$ACTIVE_VERSION" = "blue" ]; then
+            ROLLBACK_TO="green"
+          else
+            ROLLBACK_TO="blue"
+          fi
+
+          echo "Rolling back to: ${ROLLBACK_TO}"
+
+          # Verify rollback target is healthy
+          READY_PODS=$(kubectl get deployment crm-app-${ROLLBACK_TO} -n ${{ inputs.environment }} \
+            -o jsonpath='{.status.readyReplicas}' 2>/dev/null || echo "0")
+
+          if [ "$READY_PODS" = "0" ]; then
+            echo "⚠️ Rollback target has 0 ready pods, scaling up..."
+            kubectl scale deployment crm-app-${ROLLBACK_TO} --replicas=3 -n ${{ inputs.environment }}
+            kubectl rollout status deployment/crm-app-${ROLLBACK_TO} -n ${{ inputs.environment }} --timeout=300s
+          fi
+
+          # Switch traffic
+          kubectl patch service crm-app -n ${{ inputs.environment }} \
+            -p "{\"spec\":{\"selector\":{\"version\":\"${ROLLBACK_TO}\"}}}"
+
+          kubectl annotate service crm-app -n ${{ inputs.environment }} \
+            blue-green.deployment/active-version=${ROLLBACK_TO} --overwrite
+
+          echo "✅ Traffic switched to ${ROLLBACK_TO}"
+
+          echo "rollback_to=${ROLLBACK_TO}" >> $GITHUB_ENV
+
+      - name: Rollback canary deployment
+        if: inputs.strategy == 'canary'
+        run: |
+          echo "Rolling back canary deployment..."
+
+          # Scale down canary
+          kubectl scale deployment crm-app-canary --replicas=0 -n ${{ inputs.environment }}
+
+          # Scale up stable to full capacity
+          kubectl scale deployment crm-app-stable --replicas=10 -n ${{ inputs.environment }}
+
+          # Remove canary ingress weight
+          if kubectl get ingress crm-app-canary -n ${{ inputs.environment }} &> /dev/null; then
+            kubectl patch ingress crm-app-canary -n ${{ inputs.environment }} \
+              -p '{"metadata":{"annotations":{"nginx.ingress.kubernetes.io/canary-weight":"0"}}}'
+          fi
+
+          # Wait for stable to be ready
+          kubectl rollout status deployment/crm-app-stable -n ${{ inputs.environment }} --timeout=300s
+
+          echo "✅ Canary rolled back, all traffic to stable"
+
+      - name: Rollback standard deployment
+        if: inputs.strategy == 'standard'
+        run: |
+          echo "Rolling back standard deployment..."
+
+          if [ -n "${{ inputs.rollback_to_version }}" ]; then
+            echo "Rolling back to specific version: ${{ inputs.rollback_to_version }}"
+            kubectl set image deployment/crm-app \
+              crm-app=${{ env.REGISTRY }}/${{ github.repository_owner }}/crm-app:${{ inputs.rollback_to_version }} \
+              -n ${{ inputs.environment }}
+          else
+            echo "Rolling back to previous revision..."
+            kubectl rollout undo deployment/crm-app -n ${{ inputs.environment }}
+          fi
+
+          # Wait for rollout
+          kubectl rollout status deployment/crm-app -n ${{ inputs.environment }} --timeout=600s
+
+          echo "✅ Deployment rolled back successfully"
+
+      - name: Verify rollback
+        run: |
+          echo "Verifying rollback..."
+
+          # Get pod status
+          kubectl get pods -n ${{ inputs.environment }} -l app=crm-app
+
+          # Wait for pods to be ready
+          kubectl wait --for=condition=ready pod \
+            -l app=crm-app \
+            -n ${{ inputs.environment }} \
+            --timeout=300s
+
+          echo "✅ Rollback verification passed"
+
+      - name: Run smoke tests
+        run: |
+          echo "Running smoke tests..."
+
+          # Get a pod name
+          POD_NAME=$(kubectl get pods -n ${{ inputs.environment }} \
+            -l app=crm-app \
+            -o jsonpath='{.items[0].metadata.name}')
+
+          # Test health endpoint
+          kubectl exec $POD_NAME -n ${{ inputs.environment }} -- \
+            sh -c "wget -q --spider http://localhost:3000/api/health || exit 1"
+
+          echo "✅ Smoke tests passed"
+
+      - name: Rollback summary
+        if: always()
+        run: |
+          echo "## Rollback Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Strategy:** ${{ inputs.strategy }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment:** ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ inputs.strategy }}" = "blue-green" ]; then
+            echo "- **Rolled back to:** ${rollback_to}" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ inputs.rollback_to_version }}" != "" ]; then
+            echo "- **Version:** ${{ inputs.rollback_to_version }}" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ Rollback completed successfully" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "The application has been rolled back to a previous stable version." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Rollback failed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Please check the logs and manually verify the deployment state." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Create rollback incident
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Create an issue to track rollback failure
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 Rollback Failed - ${{ inputs.environment }}`,
+              body: `
+              ## Rollback Failure
+
+              A rollback operation has failed and requires immediate attention.
+
+              **Details:**
+              - **Strategy:** ${{ inputs.strategy }}
+              - **Environment:** ${{ inputs.environment }}
+              - **Workflow Run:** [#${context.runNumber}](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+              - **Triggered by:** @${context.actor}
+
+              **Action Required:**
+              1. Check the workflow logs for errors
+              2. Verify the cluster state manually
+              3. Execute manual rollback if needed
+              4. Update this issue with resolution
+
+              cc: @DevOps-team
+              `,
+              labels: ['incident', 'rollback', 'production', 'urgent']
+            });

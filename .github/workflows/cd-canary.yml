@@ -1,0 +1,227 @@
+name: CD - Canary Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy (e.g., v1.2.3)'
+        required: true
+        type: string
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      traffic_percentage:
+        description: 'Initial canary traffic percentage'
+        required: true
+        type: choice
+        options:
+          - '10'
+          - '25'
+          - '50'
+        default: '10'
+      auto_promote:
+        description: 'Auto-promote to 100% if metrics are healthy'
+        required: true
+        type: boolean
+        default: false
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  deploy-canary:
+    name: Deploy Canary
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" | base64 -d > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      - name: Verify cluster connection
+        run: kubectl cluster-info
+
+      - name: Deploy canary version
+        run: |
+          echo "Deploying canary version ${{ inputs.version }}..."
+
+          # Update canary deployment image
+          kubectl set image deployment/crm-app-canary \
+            crm-app=${{ env.REGISTRY }}/${{ github.repository_owner }}/crm-app:${{ inputs.version }} \
+            -n ${{ inputs.environment }}
+
+          # Wait for rollout
+          kubectl rollout status deployment/crm-app-canary \
+            -n ${{ inputs.environment }} \
+            --timeout=600s
+
+          echo "Canary deployment ready ✓"
+
+      - name: Set traffic percentage
+        run: |
+          PERCENTAGE=${{ inputs.traffic_percentage }}
+          echo "Setting canary traffic to ${PERCENTAGE}%..."
+
+          # Check if using NGINX Ingress
+          if kubectl get ingress crm-app-canary -n ${{ inputs.environment }} &> /dev/null; then
+            echo "Using NGINX Ingress canary configuration..."
+            kubectl patch ingress crm-app-canary -n ${{ inputs.environment }} \
+              -p "{\"metadata\":{\"annotations\":{\"nginx.ingress.kubernetes.io/canary-weight\":\"${PERCENTAGE}\"}}}"
+          else
+            echo "Using replica-based traffic split..."
+            TOTAL_REPLICAS=10
+            CANARY_REPLICAS=$((TOTAL_REPLICAS * PERCENTAGE / 100))
+            STABLE_REPLICAS=$((TOTAL_REPLICAS - CANARY_REPLICAS))
+
+            # Ensure at least 1 canary replica
+            if [ $CANARY_REPLICAS -eq 0 ]; then
+              CANARY_REPLICAS=1
+              STABLE_REPLICAS=$((TOTAL_REPLICAS - 1))
+            fi
+
+            kubectl scale deployment/crm-app-stable --replicas=${STABLE_REPLICAS} -n ${{ inputs.environment }}
+            kubectl scale deployment/crm-app-canary --replicas=${CANARY_REPLICAS} -n ${{ inputs.environment }}
+          fi
+
+          echo "Traffic split configured: ${PERCENTAGE}% canary ✓"
+
+      - name: Health check canary
+        id: health_check
+        run: |
+          echo "Running health checks on canary..."
+
+          # Wait for canary pods to be ready
+          kubectl wait --for=condition=ready pod \
+            -l app=crm-app,track=canary \
+            -n ${{ inputs.environment }} \
+            --timeout=300s
+
+          # Test health endpoint
+          POD_NAME=$(kubectl get pods -n ${{ inputs.environment }} \
+            -l app=crm-app,track=canary \
+            -o jsonpath='{.items[0].metadata.name}')
+
+          kubectl exec $POD_NAME -n ${{ inputs.environment }} -- \
+            sh -c "wget -q --spider http://localhost:3000/api/health || exit 1"
+
+          echo "Canary health checks passed ✓"
+
+      - name: Monitor canary metrics
+        id: monitor
+        run: |
+          echo "Monitoring canary for 5 minutes..."
+
+          # Monitor for 5 minutes
+          END_TIME=$(($(date +%s) + 300))
+
+          while [ $(date +%s) -lt $END_TIME ]; do
+            REMAINING=$((END_TIME - $(date +%s)))
+
+            # Check canary pod health
+            READY_PODS=$(kubectl get pods -n ${{ inputs.environment }} \
+              -l app=crm-app,track=canary \
+              --field-selector=status.phase=Running \
+              --no-headers 2>/dev/null | wc -l)
+
+            echo "Canary status: ${READY_PODS} pods running | Time remaining: ${REMAINING}s"
+
+            # Check for errors in logs
+            ERROR_COUNT=$(kubectl logs -n ${{ inputs.environment }} \
+              -l app=crm-app,track=canary \
+              --tail=50 --since=1m 2>/dev/null | grep -i "error" | wc -l || echo "0")
+
+            if [ $ERROR_COUNT -gt 10 ]; then
+              echo "⚠️ High error count detected: ${ERROR_COUNT}"
+              echo "metrics_healthy=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+
+            sleep 30
+          done
+
+          echo "metrics_healthy=true" >> $GITHUB_OUTPUT
+          echo "Monitoring completed successfully ✓"
+
+      - name: Progressive promotion
+        if: inputs.auto_promote == true && steps.monitor.outputs.metrics_healthy == 'true'
+        run: |
+          echo "Auto-promoting canary to 100%..."
+
+          STAGES=(25 50 75 100)
+
+          for STAGE in "${STAGES[@]}"; do
+            echo "Increasing canary traffic to ${STAGE}%..."
+
+            if kubectl get ingress crm-app-canary -n ${{ inputs.environment }} &> /dev/null; then
+              kubectl patch ingress crm-app-canary -n ${{ inputs.environment }} \
+                -p "{\"metadata\":{\"annotations\":{\"nginx.ingress.kubernetes.io/canary-weight\":\"${STAGE}\"}}}"
+            else
+              TOTAL_REPLICAS=10
+              CANARY_REPLICAS=$((TOTAL_REPLICAS * STAGE / 100))
+              STABLE_REPLICAS=$((TOTAL_REPLICAS - CANARY_REPLICAS))
+
+              kubectl scale deployment/crm-app-stable --replicas=${STABLE_REPLICAS} -n ${{ inputs.environment }}
+              kubectl scale deployment/crm-app-canary --replicas=${CANARY_REPLICAS} -n ${{ inputs.environment }}
+            fi
+
+            echo "Monitoring at ${STAGE}% for 2 minutes..."
+            sleep 120
+          done
+
+          echo "Canary promoted to 100% ✓"
+
+      - name: Deployment summary
+        if: always()
+        run: |
+          echo "## Canary Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version:** ${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment:** ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Traffic Percentage:** ${{ inputs.traffic_percentage }}%" >> $GITHUB_STEP_SUMMARY
+          echo "- **Auto Promote:** ${{ inputs.auto_promote }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.monitor.outputs.metrics_healthy }}" = "true" ]; then
+            echo "✅ Canary metrics are healthy" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Canary metrics show issues - review before promoting" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ inputs.auto_promote }}" = "true" ] && [ "${{ steps.monitor.outputs.metrics_healthy }}" = "true" ]; then
+            echo "- ✅ Canary has been auto-promoted to 100%" >> $GITHUB_STEP_SUMMARY
+            echo "- 📝 Promote to stable using promote workflow" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- 📊 Monitor canary at: https://canary.crm.example.com" >> $GITHUB_STEP_SUMMARY
+            echo "- ⬆️ Increase traffic manually if metrics look good" >> $GITHUB_STEP_SUMMARY
+            echo "- ↩️ Rollback if issues detected" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Notify deployment status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const status = '${{ job.status }}' === 'success' ? '✅ Success' : '❌ Failed';
+            console.log(`Canary Deployment ${status}`);

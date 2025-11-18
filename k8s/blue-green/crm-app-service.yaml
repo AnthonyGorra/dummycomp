@@ -1,0 +1,64 @@
+# Main production service - routes traffic to active deployment
+# To switch between blue and green, update the version label in selector
+apiVersion: v1
+kind: Service
+metadata:
+  name: crm-app
+  labels:
+    app: crm-app
+    deployment-strategy: blue-green
+  annotations:
+    # Current active version
+    blue-green.deployment/active-version: "blue"
+spec:
+  type: ClusterIP
+  selector:
+    app: crm-app
+    version: blue  # Change to "green" to switch traffic
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+    protocol: TCP
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+---
+# Blue service - for testing blue deployment
+apiVersion: v1
+kind: Service
+metadata:
+  name: crm-app-blue
+  labels:
+    app: crm-app
+    version: blue
+spec:
+  type: ClusterIP
+  selector:
+    app: crm-app
+    version: blue
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+    protocol: TCP
+---
+# Green service - for testing green deployment
+apiVersion: v1
+kind: Service
+metadata:
+  name: crm-app-green
+  labels:
+    app: crm-app
+    version: green
+spec:
+  type: ClusterIP
+  selector:
+    app: crm-app
+    version: green
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+    protocol: TCP

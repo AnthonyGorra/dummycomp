@@ -1,0 +1,149 @@
+name: CD - Blue-Green Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy (e.g., v1.2.3)'
+        required: true
+        type: string
+      target_color:
+        description: 'Target color (blue or green)'
+        required: true
+        type: choice
+        options:
+          - blue
+          - green
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      auto_switch:
+        description: 'Automatically switch traffic after health checks'
+        required: true
+        type: boolean
+        default: false
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  deploy-blue-green:
+    name: Deploy to ${{ inputs.target_color }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" | base64 -d > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      - name: Verify cluster connection
+        run: kubectl cluster-info
+
+      - name: Deploy to ${{ inputs.target_color }}
+        run: |
+          # Update image in deployment
+          kubectl set image deployment/crm-app-${{ inputs.target_color }} \
+            crm-app=${{ env.REGISTRY }}/${{ github.repository_owner }}/crm-app:${{ inputs.version }} \
+            -n ${{ inputs.environment }}
+
+          # Wait for rollout to complete
+          kubectl rollout status deployment/crm-app-${{ inputs.target_color }} \
+            -n ${{ inputs.environment }} \
+            --timeout=600s
+
+      - name: Run health checks
+        id: health_check
+        run: |
+          echo "Running health checks on ${{ inputs.target_color }} deployment..."
+
+          # Wait for pods to be ready
+          kubectl wait --for=condition=ready pod \
+            -l app=crm-app,version=${{ inputs.target_color }} \
+            -n ${{ inputs.environment }} \
+            --timeout=300s
+
+          # Run health check endpoint test
+          POD_NAME=$(kubectl get pods -n ${{ inputs.environment }} \
+            -l app=crm-app,version=${{ inputs.target_color }} \
+            -o jsonpath='{.items[0].metadata.name}')
+
+          kubectl exec $POD_NAME -n ${{ inputs.environment }} -- \
+            sh -c "wget -q --spider http://localhost:3000/api/health || exit 1"
+
+          echo "Health checks passed ✓"
+
+      - name: Switch traffic to ${{ inputs.target_color }}
+        if: inputs.auto_switch == true
+        run: |
+          echo "Switching traffic to ${{ inputs.target_color }}..."
+
+          # Update service selector
+          kubectl patch service crm-app -n ${{ inputs.environment }} \
+            -p '{"spec":{"selector":{"version":"${{ inputs.target_color }}"}}}'
+
+          # Update annotation
+          kubectl annotate service crm-app -n ${{ inputs.environment }} \
+            blue-green.deployment/active-version=${{ inputs.target_color }} --overwrite
+
+          echo "Traffic switched to ${{ inputs.target_color }} ✓"
+
+      - name: Deployment summary
+        run: |
+          echo "## Blue-Green Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version:** ${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Target Color:** ${{ inputs.target_color }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment:** ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Auto Switch:** ${{ inputs.auto_switch }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ inputs.auto_switch }}" = "true" ]; then
+            echo "✅ Traffic has been switched to **${{ inputs.target_color }}**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Deployment successful but traffic not switched" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "To switch traffic manually:" >> $GITHUB_STEP_SUMMARY
+            echo '```bash' >> $GITHUB_STEP_SUMMARY
+            echo "kubectl patch service crm-app -n ${{ inputs.environment }} \\" >> $GITHUB_STEP_SUMMARY
+            echo '  -p '"'"'{"spec":{"selector":{"version":"${{ inputs.target_color }}"}}'"'"'' >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Notify deployment status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const status = '${{ job.status }}' === 'success' ? '✅ Success' : '❌ Failed';
+            const message = `
+            ## Blue-Green Deployment ${status}
+
+            - **Version:** ${{ inputs.version }}
+            - **Target:** ${{ inputs.target_color }}
+            - **Environment:** ${{ inputs.environment }}
+            - **Traffic Switched:** ${{ inputs.auto_switch }}
+            - **Workflow:** ${context.workflow}
+            - **Run:** [#${context.runNumber}](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+            `;
+
+            // You can integrate with Slack, Discord, or other notification systems here
+            console.log(message);

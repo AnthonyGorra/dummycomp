@@ -1,0 +1,106 @@
+# Istio VirtualService for advanced canary deployment
+# Requires Istio service mesh to be installed
+# Provides fine-grained traffic control
+
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: crm-app
+  labels:
+    app: crm-app
+spec:
+  hosts:
+  - crm-app
+  - crm.example.com
+  gateways:
+  - crm-app-gateway
+  - mesh
+  http:
+  # Route 10% traffic to canary
+  - match:
+    - headers:
+        x-canary:
+          exact: "true"
+    route:
+    - destination:
+        host: crm-app-canary
+        port:
+          number: 80
+      weight: 100
+  # Percentage-based routing
+  - route:
+    - destination:
+        host: crm-app-stable
+        port:
+          number: 80
+      weight: 90
+    - destination:
+        host: crm-app-canary
+        port:
+          number: 80
+      weight: 10
+    retries:
+      attempts: 3
+      perTryTimeout: 2s
+      retryOn: 5xx,reset,connect-failure,refused-stream
+    timeout: 10s
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: crm-app
+  labels:
+    app: crm-app
+spec:
+  host: crm-app
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http1MaxPendingRequests: 50
+        http2MaxRequests: 100
+        maxRequestsPerConnection: 2
+    loadBalancer:
+      simple: LEAST_REQUEST
+    outlierDetection:
+      consecutiveErrors: 5
+      interval: 30s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 50
+      minHealthPercent: 40
+  subsets:
+  - name: stable
+    labels:
+      track: stable
+  - name: canary
+    labels:
+      track: canary
+---
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: crm-app-gateway
+  labels:
+    app: crm-app
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - crm.example.com
+    tls:
+      httpsRedirect: true
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    hosts:
+    - crm.example.com
+    tls:
+      mode: SIMPLE
+      credentialName: crm-app-tls

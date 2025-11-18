@@ -1,0 +1,62 @@
+# Service for canary deployment
+# This service selects both stable and canary pods
+# Traffic is split based on replica count
+apiVersion: v1
+kind: Service
+metadata:
+  name: crm-app
+  labels:
+    app: crm-app
+    deployment-strategy: canary
+  annotations:
+    canary.deployment/stable-replicas: "9"
+    canary.deployment/canary-replicas: "1"
+    canary.deployment/traffic-split: "90-10"
+spec:
+  type: ClusterIP
+  selector:
+    app: crm-app  # Selects both stable and canary pods
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+    protocol: TCP
+  sessionAffinity: None  # No session affinity for random distribution
+---
+# Service for stable deployment only
+apiVersion: v1
+kind: Service
+metadata:
+  name: crm-app-stable
+  labels:
+    app: crm-app
+    track: stable
+spec:
+  type: ClusterIP
+  selector:
+    app: crm-app
+    track: stable
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+    protocol: TCP
+---
+# Service for canary deployment only
+apiVersion: v1
+kind: Service
+metadata:
+  name: crm-app-canary
+  labels:
+    app: crm-app
+    track: canary
+spec:
+  type: ClusterIP
+  selector:
+    app: crm-app
+    track: canary
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+    protocol: TCP
