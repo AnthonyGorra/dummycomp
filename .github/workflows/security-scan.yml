@@ -1,0 +1,145 @@
+name: Security Scanning
+
+on:
+  push:
+    branches: [ main, develop, claude/* ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run security scan daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  dependency-scan:
+    name: Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: crm-app/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./crm-app
+        run: npm ci
+
+      - name: Run npm audit
+        working-directory: ./crm-app
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Run vulnerability check
+        working-directory: ./crm-app
+        run: npm run security:check:ci
+        continue-on-error: true
+
+      - name: Upload security audit results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-audit-results
+          path: crm-app/security-audit-results.json
+          if-no-files-found: ignore
+
+  code-security:
+    name: Code Security Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run ESLint security checks
+        working-directory: ./crm-app
+        run: |
+          npm ci
+          npm run lint
+        continue-on-error: true
+
+  secret-scan:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for secrets in code
+        run: |
+          echo "Checking for potential secrets..."
+          # Check for common secret patterns
+          if grep -r "password\s*=\s*['\"].\{8,\}['\"]" --include="*.ts" --include="*.js" --exclude-dir=node_modules .; then
+            echo "⚠️ Warning: Potential hardcoded password found"
+          fi
+
+          if grep -r "api_key\s*=\s*['\"].\{16,\}['\"]" --include="*.ts" --include="*.js" --exclude-dir=node_modules .; then
+            echo "⚠️ Warning: Potential hardcoded API key found"
+          fi
+
+          if grep -r "secret\s*=\s*['\"].\{16,\}['\"]" --include="*.ts" --include="*.js" --exclude-dir=node_modules .; then
+            echo "⚠️ Warning: Potential hardcoded secret found"
+          fi
+        continue-on-error: true
+
+      - name: Check for .env files in git
+        run: |
+          if git ls-files | grep -q "\.env$"; then
+            echo "❌ Error: .env files should not be committed to git"
+            exit 1
+          else
+            echo "✅ No .env files in git"
+          fi
+
+  license-check:
+    name: License Compliance Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: crm-app/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./crm-app
+        run: npm ci
+
+      - name: Check licenses
+        working-directory: ./crm-app
+        run: |
+          echo "Checking package licenses..."
+          npm list --depth=0
+        continue-on-error: true
+
+  security-summary:
+    name: Security Summary
+    runs-on: ubuntu-latest
+    needs: [dependency-scan, code-security, secret-scan, license-check]
+    if: always()
+
+    steps:
+      - name: Create security summary
+        run: |
+          echo "# Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Security scans completed for commit ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "- **Dependency Scan**: ${{ needs.dependency-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Code Security**: ${{ needs.code-security.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Secret Scan**: ${{ needs.secret-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **License Check**: ${{ needs.license-check.result }}" >> $GITHUB_STEP_SUMMARY

@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { AIMessage, AIResponse } from '@/lib/ai/providers'
+import { z } from 'zod'
+import {
+  validateRequestBody,
+  checkRequestSize,
+  REQUEST_SIZE_LIMITS,
+  getClientIp,
+  auditAndSanitizeXSS,
+  auditRequestInputs,
+} from '@/lib/security'
 
 // Initialize Claude client
 let anthropic: Anthropic | null = null
@@ -12,21 +21,62 @@ if (process.env.ANTHROPIC_API_KEY) {
   })
 }
 
+// Validation schema for chat request
+const chatRequestSchema = z.object({
+  messages: z.array(
+    z.object({
+      role: z.enum(['system', 'user', 'assistant']),
+      content: z.string().max(10000),
+    })
+  ).min(1).max(50),
+  provider: z.enum(['claude']).optional(),
+})
+
 export async function POST(request: NextRequest) {
   try {
-    const { messages, provider } = await request.json()
+    // 1. Check request size
+    const sizeCheck = checkRequestSize(request, REQUEST_SIZE_LIMITS.MEDIUM)
+    if (!sizeCheck.valid) {
+      return sizeCheck.error
+    }
 
-    if (!messages || !Array.isArray(messages)) {
+    // 2. Validate request body
+    const validation = await validateRequestBody(request, chatRequestSchema)
+    if (!validation.success) {
+      return validation.error
+    }
+
+    const { messages, provider } = validation.data
+
+    // 3. Audit for XSS and SQL injection attempts
+    const clientIp = getClientIp(request)
+    const auditResult = auditRequestInputs(
+      { messages, provider },
+      'api.ai.chat',
+      { ipAddress: clientIp }
+    )
+
+    if (!auditResult.valid) {
+      console.warn('Suspicious input detected:', auditResult.errors)
       return NextResponse.json(
-        { error: 'Invalid messages format' },
+        { error: 'Invalid input detected', details: auditResult.errors },
         { status: 400 }
       )
     }
 
-    const response: AIResponse = await handleClaudeRequest(messages)
+    // 4. Sanitize messages for XSS
+    const sanitizedMessages = messages.map((msg) => ({
+      ...msg,
+      content: auditAndSanitizeXSS(msg.content, 'ai.chat.message', {
+        ipAddress: clientIp,
+      }).sanitized,
+    }))
+
+    // 5. Process the request
+    const response: AIResponse = await handleClaudeRequest(sanitizedMessages)
 
     // Only Claude is supported
-    if (provider !== 'claude') {
+    if (provider && provider !== 'claude') {
       return NextResponse.json(
         { error: `Only Claude provider is currently supported. Received: ${provider}` },
         { status: 400 }

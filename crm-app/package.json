@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "security:audit": "npm audit --audit-level=moderate",
+    "security:audit:fix": "npm audit fix",
+    "security:check": "node scripts/check-vulnerabilities.js",
+    "security:check:ci": "VULN_FAIL_LEVEL=high node scripts/check-vulnerabilities.js",
+    "security:full": "bash scripts/security-audit.sh",
+    "prebuild": "npm run security:audit"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.67.0",
