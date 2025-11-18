@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Plus, Search, Mail, Phone, MoreHorizontal, DollarSign, Calendar, Target, User, PieChart, FileText, TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -22,19 +22,24 @@ import {
 import { Label } from '@/components/ui/label'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { Pagination } from '@/components/ui/pagination'
 import { createClient } from '@/lib/supabase'
 import { useToast } from '@/hooks/use-toast'
 import { webhookEmitter } from '@/lib/webhooks'
 import { Client } from '@/lib/types/client'
 import { mockClients } from '@/lib/data/mock-clients'
+import { allClients } from '@/lib/data/all-clients'
 
 interface ClientWithId extends Client {
   id: string
 }
 
+const ITEMS_PER_PAGE = 20
+
 export default function ClientsPage() {
   const [clients, setClients] = useState<ClientWithId[]>([])
   const [searchQuery, setSearchQuery] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false)
   const [selectedClient, setSelectedClient] = useState<ClientWithId | null>(null)
@@ -67,8 +72,8 @@ export default function ClientsPage() {
   }, [])
 
   const loadClients = async () => {
-    // Add IDs to mock clients
-    const clientsWithIds: ClientWithId[] = mockClients.map((client, index) => ({
+    // Use all clients for better performance testing
+    const clientsWithIds: ClientWithId[] = allClients.map((client, index) => ({
       ...client,
       id: (index + 1).toString(),
       created_at: new Date().toISOString(),
@@ -146,9 +151,24 @@ export default function ClientsPage() {
     }
   }
 
-  const filteredClients = clients.filter(client =>
-    `${client.first_name} ${client.last_name} ${client.email} ${client.assigned_adviser || ''} ${client.investment_goal || ''}`.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  // Memoize filtered and paginated clients for performance
+  const filteredClients = useMemo(() => {
+    return clients.filter(client =>
+      `${client.first_name} ${client.last_name} ${client.email} ${client.assigned_adviser || ''} ${client.investment_goal || ''}`.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  }, [clients, searchQuery])
+
+  const totalPages = Math.ceil(filteredClients.length / ITEMS_PER_PAGE)
+
+  const paginatedClients = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+    return filteredClients.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+  }, [filteredClients, currentPage])
+
+  // Reset to page 1 when search changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery])
 
   const handleClientClick = (client: ClientWithId) => {
     // Navigate to individual client page instead of opening modal
@@ -207,41 +227,54 @@ export default function ClientsPage() {
         />
       </div>
 
-      {/* Clients List - Simple name boxes */}
-      <div className="space-y-2">
-        {filteredClients.map((client) => (
-          <Card 
-            key={client.id} 
-            className="p-3 hover:shadow-md transition-all border-cream-dark cursor-pointer bg-white hover:bg-cream-light"
-            onClick={() => handleClientClick(client)}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <Avatar className="h-8 w-8 bg-coral-light">
-                  <AvatarFallback className="bg-coral text-white text-sm">
-                    {getInitials(client.first_name, client.last_name)}
-                  </AvatarFallback>
-                </Avatar>
-                <h3 className="font-medium text-black hover:text-coral transition-colors">
-                  {client.first_name} {client.last_name}
-                </h3>
+      {/* Clients List - Simple name boxes with pagination */}
+      <div className="space-y-4">
+        <div className="space-y-2">
+          {paginatedClients.map((client) => (
+            <Card
+              key={client.id}
+              className="p-3 hover:shadow-md transition-all border-cream-dark cursor-pointer bg-white hover:bg-cream-light"
+              onClick={() => handleClientClick(client)}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Avatar className="h-8 w-8 bg-coral-light">
+                    <AvatarFallback className="bg-coral text-white text-sm">
+                      {getInitials(client.first_name, client.last_name)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <h3 className="font-medium text-black hover:text-coral transition-colors">
+                    {client.first_name} {client.last_name}
+                  </h3>
+                </div>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                    <Button variant="ghost" size="sm">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); window.location.href = `/clients/${client.id}`; }}>View Details</DropdownMenuItem>
+                    <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Edit</DropdownMenuItem>
+                    <DropdownMenuItem className="text-red-600" onClick={(e) => e.stopPropagation()}>Delete</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
-              
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                  <Button variant="ghost" size="sm">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); window.location.href = `/clients/${client.id}`; }}>View Details</DropdownMenuItem>
-                  <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Edit</DropdownMenuItem>
-                  <DropdownMenuItem className="text-red-600" onClick={(e) => e.stopPropagation()}>Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </Card>
-        ))}
+            </Card>
+          ))}
+        </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            pageSize={ITEMS_PER_PAGE}
+            totalItems={filteredClients.length}
+          />
+        )}
       </div>
 
       {/* Add Client Dialog */}

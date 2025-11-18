@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Plus, Search, Globe, Phone, MoreHorizontal, Building2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Pagination } from '@/components/ui/pagination'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,9 +37,12 @@ interface Company {
   dealCount: number
 }
 
+const ITEMS_PER_PAGE = 12
+
 export default function CompaniesPage() {
   const [companies, setCompanies] = useState<Company[]>([])
   const [searchQuery, setSearchQuery] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
@@ -140,9 +144,24 @@ export default function CompaniesPage() {
     }
   }
 
-  const filteredCompanies = companies.filter(company =>
-    `${company.name} ${company.industry}`.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  // Memoize filtered and paginated companies for performance
+  const filteredCompanies = useMemo(() => {
+    return companies.filter(company =>
+      `${company.name} ${company.industry}`.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  }, [companies, searchQuery])
+
+  const totalPages = Math.ceil(filteredCompanies.length / ITEMS_PER_PAGE)
+
+  const paginatedCompanies = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+    return filteredCompanies.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+  }, [filteredCompanies, currentPage])
+
+  // Reset to page 1 when search changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery])
 
   const getIndustryColor = (industry: string | null) => {
     if (!industry) return 'bg-gray-100 text-gray-800'
@@ -181,74 +200,87 @@ export default function CompaniesPage() {
         />
       </div>
 
-      {/* Companies Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {filteredCompanies.map((company) => (
-          <Card key={company.id} className="hover:shadow-lg transition-shadow border-cream-dark">
-            <CardHeader className="pb-3">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start space-x-4">
-                  <div className="p-2 bg-coral-light rounded-lg">
-                    <Building2 className="h-6 w-6 text-coral-dark" />
+      {/* Companies Grid with pagination */}
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {paginatedCompanies.map((company) => (
+            <Card key={company.id} className="hover:shadow-lg transition-shadow border-cream-dark">
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start space-x-4">
+                    <div className="p-2 bg-coral-light rounded-lg">
+                      <Building2 className="h-6 w-6 text-coral-dark" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg text-black">{company.name}</h3>
+                      {company.industry && (
+                        <Badge variant="secondary" className={`mt-1 ${getIndustryColor(company.industry)}`}>
+                          {company.industry}
+                        </Badge>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-lg text-black">{company.name}</h3>
-                    {company.industry && (
-                      <Badge variant="secondary" className={`mt-1 ${getIndustryColor(company.industry)}`}>
-                        {company.industry}
-                      </Badge>
-                    )}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>View Details</DropdownMenuItem>
+                      <DropdownMenuItem>Edit</DropdownMenuItem>
+                      <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {company.website && (
+                    <div className="flex items-center text-sm text-gray-600">
+                      <Globe className="h-4 w-4 mr-2" />
+                      <a href={company.website} target="_blank" rel="noopener noreferrer" className="hover:text-coral">
+                        {company.website}
+                      </a>
+                    </div>
+                  )}
+                  {company.phone && (
+                    <div className="flex items-center text-sm text-gray-600">
+                      <Phone className="h-4 w-4 mr-2" />
+                      {company.phone}
+                    </div>
+                  )}
+                  {company.address && (
+                    <div className="text-sm text-gray-600 mt-2">
+                      {company.address}
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center gap-4 mt-4 pt-4 border-t border-cream">
+                  <div className="text-sm">
+                    <span className="font-medium">{company.contactCount}</span>
+                    <span className="text-gray-600 ml-1">contacts</span>
+                  </div>
+                  <div className="text-sm">
+                    <span className="font-medium">{company.dealCount}</span>
+                    <span className="text-gray-600 ml-1">deals</span>
                   </div>
                 </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>View Details</DropdownMenuItem>
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {company.website && (
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Globe className="h-4 w-4 mr-2" />
-                    <a href={company.website} target="_blank" rel="noopener noreferrer" className="hover:text-coral">
-                      {company.website}
-                    </a>
-                  </div>
-                )}
-                {company.phone && (
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Phone className="h-4 w-4 mr-2" />
-                    {company.phone}
-                  </div>
-                )}
-                {company.address && (
-                  <div className="text-sm text-gray-600 mt-2">
-                    {company.address}
-                  </div>
-                )}
-              </div>
-              <div className="flex items-center gap-4 mt-4 pt-4 border-t border-cream">
-                <div className="text-sm">
-                  <span className="font-medium">{company.contactCount}</span>
-                  <span className="text-gray-600 ml-1">contacts</span>
-                </div>
-                <div className="text-sm">
-                  <span className="font-medium">{company.dealCount}</span>
-                  <span className="text-gray-600 ml-1">deals</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            pageSize={ITEMS_PER_PAGE}
+            totalItems={filteredCompanies.length}
+          />
+        )}
       </div>
 
       {/* Add Company Dialog */}
