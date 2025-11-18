@@ -12,7 +12,8 @@ import {
   LogOut,
   Menu,
   X,
-  Bot
+  Bot,
+  CheckSquare
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase'
@@ -23,6 +24,7 @@ import { useTheme } from '@/contexts/theme-context'
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Clients', href: '/clients', icon: Users },
+  { name: 'Tasks', href: '/tasks', icon: CheckSquare },
   { name: 'AI Assistant', href: '/ai-assistant', icon: Bot },
 ]
 
