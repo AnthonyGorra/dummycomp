@@ -1,0 +1,28 @@
+# Cloudflare Workers Configuration
+# Deploy with: wrangler publish
+
+name = "crm-security-worker"
+type = "javascript"
+account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
+workers_dev = true
+route = "yourdomain.com/*"
+zone_id = "YOUR_CLOUDFLARE_ZONE_ID"
+
+# Compatibility settings
+compatibility_date = "2024-01-01"
+
+# KV Namespaces for rate limiting (optional)
+# [[kv_namespaces]]
+# binding = "RATE_LIMIT_STORE"
+# id = "YOUR_KV_NAMESPACE_ID"
+
+# Environment variables
+[env.production]
+name = "crm-security-worker-production"
+route = "yourdomain.com/*"
+workers_dev = false
+
+[env.staging]
+name = "crm-security-worker-staging"
+route = "staging.yourdomain.com/*"
+workers_dev = false

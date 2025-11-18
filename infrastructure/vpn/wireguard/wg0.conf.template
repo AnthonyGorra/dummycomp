@@ -1,0 +1,46 @@
+# WireGuard VPN Server Configuration
+# Replace placeholders with actual values before deployment
+
+[Interface]
+# Server private key (generate with: wg genkey)
+PrivateKey = SERVER_PRIVATE_KEY_HERE
+
+# VPN network address
+Address = 10.8.0.1/24
+
+# VPN listening port
+ListenPort = 51820
+
+# Post-up and post-down rules for NAT
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+# DNS server for VPN clients (optional)
+# DNS = 1.1.1.1, 8.8.8.8
+
+# ======================================
+# Client Configurations
+# ======================================
+
+# Admin Client 1
+[Peer]
+# Client public key (generate with: wg genkey | tee privatekey | wg pubkey > publickey)
+PublicKey = ADMIN1_PUBLIC_KEY_HERE
+# Allowed IPs for this client
+AllowedIPs = 10.8.0.2/32
+# Optional: Keep connection alive every 25 seconds
+PersistentKeepalive = 25
+
+# Admin Client 2
+[Peer]
+PublicKey = ADMIN2_PUBLIC_KEY_HERE
+AllowedIPs = 10.8.0.3/32
+PersistentKeepalive = 25
+
+# Remote Worker Client
+[Peer]
+PublicKey = REMOTE1_PUBLIC_KEY_HERE
+AllowedIPs = 10.8.0.4/32
+PersistentKeepalive = 25
+
+# Add more [Peer] sections as needed for additional clients

@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # WireGuard VPN Server
+  wireguard:
+    image: linuxserver/wireguard:latest
+    container_name: crm-wireguard-vpn
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+      - SERVERURL=auto  # Auto-detect public IP, or set to your domain/IP
+      - SERVERPORT=51820
+      - PEERS=admin1,admin2,developer1  # Client names
+      - PEERDNS=1.1.1.1,8.8.8.8
+      - INTERNAL_SUBNET=10.8.0.0
+      - ALLOWEDIPS=0.0.0.0/0
+      - LOG_CONFS=true
+    volumes:
+      - ./vpn/wireguard/config:/config
+      - /lib/modules:/lib/modules
+    ports:
+      - "51820:51820/udp"
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+    networks:
+      - vpn_network
+
+  # OpenVPN Server (Alternative)
+  openvpn:
+    image: kylemanna/openvpn:latest
+    container_name: crm-openvpn-vpn
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - OVPN_SERVER_URL=udp://YOUR_SERVER_IP:1194
+    volumes:
+      - ./vpn/openvpn/config:/etc/openvpn
+    ports:
+      - "1194:1194/udp"
+    restart: unless-stopped
+    networks:
+      - vpn_network
+    profiles:
+      - openvpn  # Only start if explicitly enabled
+
+  # VPN connection monitor
+  vpn-monitor:
+    build:
+      context: ./vpn/monitor
+      dockerfile: Dockerfile
+    container_name: crm-vpn-monitor
+    environment:
+      - VPN_TYPE=wireguard
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
+      - ALERT_EMAIL=${ADMIN_EMAIL}
+    volumes:
+      - ./vpn/wireguard/config:/vpn-config:ro
+    restart: unless-stopped
+    networks:
+      - vpn_network
+    depends_on:
+      - wireguard
+
+networks:
+  vpn_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16

@@ -1,0 +1,76 @@
+# OpenVPN Server Configuration
+# Alternative VPN solution to WireGuard
+
+# Server mode and port
+port 1194
+proto udp
+dev tun
+
+# SSL/TLS root certificate, certificate, and private key
+ca /etc/openvpn/server/ca.crt
+cert /etc/openvpn/server/server.crt
+key /etc/openvpn/server/server.key
+dh /etc/openvpn/server/dh.pem
+
+# Network topology
+topology subnet
+
+# VPN subnet
+server 10.9.0.0 255.255.255.0
+
+# Maintain a record of client-virtual IP address associations
+ifconfig-pool-persist /var/log/openvpn/ipp.txt
+
+# Push routes to the client to allow it to reach other private subnets
+# push "route 10.0.0.0 255.255.255.0"
+
+# Push DNS servers to clients
+push "dhcp-option DNS 1.1.1.1"
+push "dhcp-option DNS 8.8.8.8"
+
+# Allow clients to communicate with each other
+client-to-client
+
+# Keep alive: ping every 10 seconds, timeout after 120 seconds
+keepalive 10 120
+
+# Cryptographic cipher
+cipher AES-256-GCM
+auth SHA256
+
+# TLS version
+tls-version-min 1.2
+
+# Enable compression
+compress lz4-v2
+push "compress lz4-v2"
+
+# Maximum number of clients
+max-clients 100
+
+# Run as unprivileged user
+user nobody
+group nogroup
+
+# Persist keys and tunnel
+persist-key
+persist-tun
+
+# Status log
+status /var/log/openvpn/openvpn-status.log
+status-version 2
+
+# Logging verbosity
+verb 3
+
+# Silence repeating messages
+mute 20
+
+# Explicit exit notify
+explicit-exit-notify 1
+
+# TLS authentication
+tls-auth /etc/openvpn/server/ta.key 0
+
+# Additional security options
+remote-cert-tls client
