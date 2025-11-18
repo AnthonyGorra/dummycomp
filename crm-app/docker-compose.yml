@@ -12,9 +12,31 @@ services:
       - N8N_API_KEY=demo_api_key
       - WEBHOOK_SECRET=demo_webhook_secret
       - NODE_ENV=production
+      - REDIS_URL=redis://redis:6379
+      - MFA_ENCRYPTION_KEY=your-mfa-encryption-key-change-me
+      - OAUTH_ENCRYPTION_KEY=your-oauth-encryption-key-change-me
+    depends_on:
+      - redis
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  redis-data:
