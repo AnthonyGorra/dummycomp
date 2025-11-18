@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  crm-app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_SUPABASE_URL=https://dummy.supabase.co
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1bW15IiwiaWF0IjoxNjEyMjkzNjE2LCJleHAiOjE5Mjc4Njk2MTZ9.dummy_key_for_testing
+      - N8N_WEBHOOK_URL=https://demo-n8n.example.com/webhook/demo
+      - N8N_API_KEY=demo_api_key
+      - WEBHOOK_SECRET=demo_webhook_secret
+      - NODE_ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
